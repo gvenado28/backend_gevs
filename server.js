@@ -2,9 +2,7 @@ const express = require('express');
 const bcrypt = require('bcrypt'); // Agrega esta línea al inicio de tu archivo
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
-const sequelize = require('./config/database'); // Asegúrate de que esta línea esté presente
-const User = require('./models/User'); // Asegúrate de que la ruta sea correcta
-
+const { sequelize, User } = require('./config/database'); // Asegúrate de que esta línea esté presente
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -31,17 +29,33 @@ app.get('/', (req, res) => {
 });
 
 // Ruta de inicio de sesión
-app.post('/api/login', (req, res) => {
+app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
 
-  const user = users.find(user => user.email === email && user.password === password);
+  try {
+    // Busca el usuario en la base de datos
+    const user = await User.findOne({ where: { email } });
 
-  if (user) {
-    const token = jwt.sign({ email }, SECRET_KEY, { expiresIn: '1h' });
-    return res.json({ token, user });
+    // Verifica si el usuario existe
+    if (!user) {
+      return res.status(401).json({ message: 'Credenciales inválidas.' });
+    }
+
+    // Compara la contraseña proporcionada con la almacenada
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Credenciales inválidas.' });
+    }
+
+    // Crear y firmar un token
+    const token = jwt.sign({ email: user.email }, SECRET_KEY, { expiresIn: '1h' });
+
+    // Responder con el token y el usuario
+    return res.json({ token, user: { username: user.username, email: user.email } });
+  } catch (error) {
+    console.error('Error al autenticar al usuario:', error);
+    return res.status(500).json({ message: 'Error interno del servidor.' });
   }
-
-  return res.status(401).json({ message: 'Credenciales inválidas.' });
 });
 
 // Ruta de registro
@@ -59,7 +73,7 @@ app.post('/api/register', async (req, res) => {
 
   // Crear nuevo usuario
   try {
-    const newUser = await User.create({ username, email, password: hashedPassword }); // Incluye username
+    const newUser = await User.create({ username, email, password: hashedPassword });
 
     // Crear y firmar un token
     const token = jwt.sign({ email: newUser.email }, SECRET_KEY, { expiresIn: '1h' });
@@ -68,7 +82,7 @@ app.post('/api/register', async (req, res) => {
     res.status(201).json({ token, user: { username: newUser.username, email: newUser.email } });
   } catch (error) {
     console.error('Error al crear el usuario:', error);
-    res.status(500).json({ message: 'Error interno del servidor.' });
+    res.status(500).json({ message: 'Error interno del servidor.', error: error.message });
   }
 });
 

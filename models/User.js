@@ -1,3 +1,4 @@
+// models/User.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize'); // Ajusta esta ruta
 
@@ -29,6 +30,7 @@ const User = sequelize.define('User', {
     defaultValue: DataTypes.NOW,
   }
 }, {
+  tableName: 'Users', // Especifica el nombre de la tabla exacto
   timestamps: true, // Habilita automáticamente createdAt y updatedAt
 });
 
