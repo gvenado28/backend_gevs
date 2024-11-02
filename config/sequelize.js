@@ -1,6 +1,8 @@
-const { Sequelize, DataTypes } = require('sequelize');
+// config/sequelize.js
+const { Sequelize } = require('sequelize');
 require('dotenv').config(); // Importa dotenv para acceder a las variables de entorno
 
+// Crear la instancia de Sequelize con las variables de entorno
 const sequelize = new Sequelize(
   process.env.DB_NAME,
   process.env.DB_USER,
@@ -13,27 +15,7 @@ const sequelize = new Sequelize(
   }
 );
 
-// Definición del modelo con nombre de tabla en mayúsculas
-const User = sequelize.define('User', {
-  username: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  email: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true,
-  },
-  password: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-}, {
-  tableName: 'Users', // Asegura el uso de nombre de tabla en mayúsculas
-  freezeTableName: true, // Impide que Sequelize cambie el nombre de la tabla
-});
-
-// Conexión y sincronización
+// Probar la conexión a la base de datos
 sequelize.authenticate()
   .then(() => {
     console.log('Conexión a la base de datos establecida correctamente.');
@@ -42,7 +24,8 @@ sequelize.authenticate()
     console.error('No se pudo conectar a la base de datos:', err);
   });
 
-sequelize.sync({ alter: true })
+// config/sequelize.js
+sequelize.sync()
   .then(() => {
     console.log('Sincronización de modelos con la base de datos completada.');
   })
@@ -50,5 +33,6 @@ sequelize.sync({ alter: true })
     console.error('Error al sincronizar los modelos:', err);
   });
 
-// Exportar tanto sequelize como User
-module.exports = { sequelize, User };
+
+// Exportar la instancia de sequelize
+module.exports = sequelize;
