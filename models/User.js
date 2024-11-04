@@ -1,13 +1,9 @@
 // models/User.js
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/sequelize'); // Ajusta esta ruta
+const sequelize = require('../config/sequelize'); // Asegúrate de que esta ruta sea correcta
 
+// Define el modelo de usuario
 const User = sequelize.define('User', {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
-  },
   username: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -21,26 +17,9 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  createdAt: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-  },
-  updatedAt: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-  }
 }, {
-  tableName: 'Users', // Especifica el nombre de la tabla exacto
-  timestamps: true, // Habilita automáticamente createdAt y updatedAt
+  tableName: 'users', // Nombre de la tabla en la base de datos
+  timestamps: false, // Desactiva los timestamps automáticos (createdAt y updatedAt)
 });
 
-// Sincroniza el modelo con la base de datos
-User.sync()
-  .then(() => {
-    console.log('Modelo User sincronizado con la base de datos.');
-  })
-  .catch(err => {
-    console.error('Error al sincronizar el modelo User:', err);
-  });
-
-module.exports = User;
+module.exports = User; // Exporta el modelo para que pueda ser usado en otras partes de la aplicación
