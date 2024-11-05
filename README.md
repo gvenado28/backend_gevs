@@ -1,7 +1,3 @@
-Aquí tienes un README detallado para el backend de tu aplicación de captura de PET:
-
----
-
 # Administrador de Tareas - Captura de PET (Backend)
 
 Este proyecto de backend es la API RESTful para la aplicación de **Administración de Tareas y Captura de PET**. Está desarrollada para gestionar el registro de usuarios, autenticación, captura semanal de PET, y generación de reportes. Utiliza Node.js con Express y Sequelize para la gestión de bases de datos.
