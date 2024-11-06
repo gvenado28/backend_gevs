@@ -24,15 +24,14 @@ sequelize.authenticate()
     console.error('No se pudo conectar a la base de datos:', err);
   });
 
-// config/sequelize.js
-sequelize.sync()
+// Sincronizar los modelos con la base de datos y aplicar cambios estructurales
+sequelize.sync({ alter: true }) // Añade { alter: true } para actualizar la estructura
   .then(() => {
     console.log('Sincronización de modelos con la base de datos completada.');
   })
   .catch(err => {
     console.error('Error al sincronizar los modelos:', err);
   });
-
 
 // Exportar la instancia de sequelize
 module.exports = sequelize;
