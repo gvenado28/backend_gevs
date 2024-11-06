@@ -17,6 +17,11 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  role: {  // Campo nuevo para definir el rol del usuario
+    type: DataTypes.ENUM('admin', 'operator'),
+    allowNull: false,
+    defaultValue: 'operator',  // Valor predeterminado es 'operator'
+  }
 }, {
   tableName: 'users', // Nombre de la tabla en la base de datos
   timestamps: false, // Desactiva los timestamps automáticos (createdAt y updatedAt)
