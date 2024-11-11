@@ -1,0 +1,36 @@
+name: CI Workflow
+
+# Definir los eventos que activan el workflow
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+# Definir los jobs (tareas) que quieres ejecutar en el workflow
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Paso 1: Check out el código fuente del repositorio
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Paso 2: Configurar el entorno de trabajo (por ejemplo, Node.js si es un proyecto de JavaScript)
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      # Paso 3: Instalar dependencias
+      - name: Install dependencies
+        run: npm install
+
+      # Paso 4: Ejecutar las pruebas
+      - name: Run tests
+        run: npm test
